@@ -113,17 +113,49 @@ def request(url, data = data):
     rsp = httpx.post(url, headers=headers, json=data, timeout=10).text
     return rsp
 
-def guild_list():
-    log("CallingAPI: guild.list","DEBUG")
+def guild_list(next = None):
+    log("CallingAPI: guild.list", "DEBUG")
     data = {
-        "next": None
+        "next": next
     }
     return request(base + "guild.list", data=data)
 
 def message_create(channel_id: str, content: str):
-    log("CallingAPI: message_create","DEBUG")
+    log("CallingAPI: message_create", "DEBUG")
     data = {
         "channel_id" : channel_id,
         "content": content
     }
     return request(base + "message.create", data=data)
+
+def message_get(channel_id: str, message_id: str):
+    log("CallingAPI: message_get", "DEBUG")
+    data = {
+        "channel_id": channel_id,
+        "message_id": message_id
+    }
+    return request(base + "message.get", data=data)
+
+def message_delete(channel_id: str, message_id: str):
+    log("CallingAPI: message_delete", "DEBUG")
+    data = {
+        "channel_id": channel_id,
+        "message_id": message_id
+    }
+    return request(base + "message.delete", data=data)
+
+def guild_member_get(guild_id: str, user_id: str):
+    log("CallingAPI: guild_member_get", "DEBUG")
+    data = {
+        "guild_id": guild_id,
+        "user_id": user_id
+    }
+    return request(base + "guild.member.get", data=data)
+
+def guild_member_list(guild_id: str, next = None):
+    log("CallingAPI: guild_member_list", "DEBUG")
+    data = {
+        "guild_id": guild_id,
+        "next": next
+    }
+    return request(base + "guild.member.list")
