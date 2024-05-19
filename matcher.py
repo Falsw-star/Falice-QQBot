@@ -4,7 +4,7 @@ from logger import log
 PLUGINLIST = {}
 
 #注册插件
-def plugin_registry(name: str, discription: str = "", usage: str = "", display: bool = False, status: bool = True):
+def plugin_registry(name: str, discription: str = "", usage: str = "", display: bool = False, status: bool = False):
     global PLUGINLIST
     plugin = {
         "name": name,
