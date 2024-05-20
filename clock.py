@@ -5,6 +5,7 @@ except ImportError:
     import _thread as thread
 
 from adapters import adapter_satori as adapter
+from adapters.adapter_satori import LOGIN
 from matcher import match
 from logger import log, save
 
