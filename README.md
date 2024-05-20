@@ -26,6 +26,6 @@
 
 # 如果你想开发Falice的插件：
 
-### 请参阅[插件文档](./docs/plugin.rd)。
+### 请参阅[插件文档](./docs/plugin.md)。
 
 ***
