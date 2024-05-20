@@ -123,7 +123,7 @@ from matcher import PLUGINLIST #这个字典保存着所有的插件信息
 ```
 #编辑该区域导入模块
 from plugins import echo
-**from plugins import 可爱的插件**
+from plugins import 可爱的插件 #这一行是新加的
 echo.loads()
-**可爱的插件.loads()**
+可爱的插件.loads() #这一行是新加的
 ```
