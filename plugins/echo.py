@@ -12,6 +12,6 @@ def main(msg, special_content):
 
 def loads():
     #注册插件名
-    plugin_registry(name="echo", usage="/echo [文本]")
+    plugin_registry(name="echo", usage="/echo [文本]",status=True)
     #在插件名下注册触发器
     load_trigger(name="echo", type="cmd", func=main, trigger="echo", permission="not_self")

@@ -4,7 +4,7 @@ from logger import log
 PLUGINLIST = {}
 
 #注册插件
-def plugin_registry(name: str, discription: str = "", usage: str = "", display: bool = False, status: bool = False):
+def plugin_registry(name: str, discription: str = "", usage: str = "", display: bool = True, status: bool = True):
     global PLUGINLIST
     plugin = {
         "name": name,
@@ -13,6 +13,7 @@ def plugin_registry(name: str, discription: str = "", usage: str = "", display: 
         "usage": usage,
         "display": display,
         "triggers": {
+            "services": {},
             "cmd": {},
             "keyword": {},
             "start": {},
@@ -22,7 +23,7 @@ def plugin_registry(name: str, discription: str = "", usage: str = "", display: 
     PLUGINLIST[name] = plugin
 
 #注册触发器
-def load_trigger(name: str, type: str, func, trigger: str = "EMPTY", block: bool = False, permission: str = "all"):
+def load_trigger(name: str, type: str, func, trigger: str, block: bool = False, permission: str = "all"):
     global PLUGINLIST
     if name not in PLUGINLIST:
         log("在注册触发器时未发现相应已注册插件，请确保在插件中先注册插件再注册触发器", "WARNING")
@@ -84,7 +85,7 @@ def on_cmd(user_id:str, content: str):
     arg_list = content.split()
     #判断是否属于cmd类型
     if arg_list[0].startswith(cmd_symbol):
-        #产生
+        #产生special_content
         cmd = arg_list[0].lstrip(cmd_symbol)
         arg_list.remove(arg_list[0])
         result["special_content"] = arg_list
@@ -114,3 +115,12 @@ def match(msg):
     result = on_cmd(user_id=user_id, content=content)
     if run(result=result, msg=msg):
         return
+    
+def run_services():
+    global PLUGINLIST
+    for plugin_key in PLUGINLIST:
+        plugin = PLUGINLIST[plugin_key]
+        if plugin["status"] == True:
+            for service_key in plugin["triggers"]["services"]:
+                function = plugin["triggers"]["services"][service_key]["func"]
+                function()
