@@ -13,8 +13,8 @@ thread.start_new_thread(adapter.run, ())
 
 #编辑该区域导入模块
 from plugins import echo
-from plugins import service_test
-service_test.loads()
+from plugins import trigger_test
+trigger_test.loads()
 echo.loads()
 
 from matcher import PLUGINLIST
