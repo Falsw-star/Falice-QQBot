@@ -12,10 +12,14 @@ log("正在启动适配器线程...","DEBUG")
 thread.start_new_thread(adapter.run, ())
 
 #编辑该区域导入模块
-from plugins import echo
-from plugins import trigger_test
-trigger_test.loads()
-echo.loads()
+from plugins import 我的世界服务器控制
+我的世界服务器控制.loads()
+from plugins import 表情包存储
+表情包存储.loads()
+from plugins import 表情包_捞
+表情包_捞.loads()
+from plugins import help
+help.loads()
 
 from matcher import PLUGINLIST
 log("插件列表: " + str(PLUGINLIST),"DEBUG")
@@ -27,7 +31,7 @@ for plugin_key in PLUGINLIST:
 log("已经注册的服务: " + str(services_list), "DEBUG")
 
 #在logs文件夹里生成每个群聊的log，如果你在使用当前版本的Falice，可以打开它。
-make_log = False
+make_log = True
 
 #主时钟
 log("启动主时钟...","DEBUG")
