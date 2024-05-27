@@ -12,12 +12,11 @@ import re#正则表达式？
 from logger import log
 import random
 def 捞图(msg,special_content):
-    if msg["content"] == "捞":
+    if msg["content"] == "图":
         folder_path = "image/" + msg["guild"]["name"] + '-' + msg["guild"]["id"]
         image_files = get_image_files(folder_path)
         random_image = select_random_image(image_files)
-        log(random_image)
-        message_create(msg["guild"]["id"],f"<at id='{msg['user']['id']}'/><img src='file:///F:/FBM/Falice-QQBot-main/{folder_path}/{random_image}'/>")
+        message_create(msg["guild"]["id"],f"<at id='{msg['user']['id']}'/><img src='file:///F:/FBM/blue/{folder_path}/{random_image}'/>")
     
 def get_image_files(folder_path):
     image_extensions = ['.jpg', '.jpeg', '.png', '.gif']# 其实只有jpg
@@ -31,5 +30,5 @@ def select_random_image(image_files):
     return random.choice(image_files)
 
 def loads():
-    plugin_registry(name="捞图", usage="捞",status=True)
-    load_trigger(name="捞图", type="start", func = 捞图, trigger="捞", permission="all")
+    plugin_registry(name="捞图", usage="图",status=True)
+    load_trigger(name="捞图", type="start", func = 捞图, trigger="图", permission="all")
