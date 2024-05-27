@@ -20,7 +20,7 @@ HEARTBEATS = []
 def on_open(ws):
 
     #鉴权连接
-    token = "1ab98aa24bc602323851dbf82fd273af1907c0e39c06c1e04e1907aff4320c05"
+    token = "d003b6c251a03919984396e35b5d324b924a2494c3c122c9ad6b56760681dcdd"
     IDENTIFY = {
         "op": 3,
         "body": {
@@ -103,7 +103,7 @@ base = "http://localhost:5500/v1/"
 
 data = {}
 def request(url, data = data):
-    token = "1ab98aa24bc602323851dbf82fd273af1907c0e39c06c1e04e1907aff4320c05"
+    token = "d003b6c251a03919984396e35b5d324b924a2494c3c122c9ad6b56760681dcdd"
     headers = {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + token,
