@@ -7,6 +7,7 @@ except ImportError:
 from adapters import adapter_satori as adapter
 from matcher import match, run_services
 from logger import log, save
+from adapters.adapter_satori import message_create
 
 log("正在启动适配器线程...","DEBUG")
 thread.start_new_thread(adapter.run, ())
@@ -29,6 +30,12 @@ log("已经注册的服务: " + str(services_list), "DEBUG")
 #在logs文件夹里生成每个群聊的log，如果你在使用当前版本的Falice，可以打开它。
 make_log = False
 
+#预定消息发送列表
+SCHEDULEDSEND = []
+def ssend(channel_id, content):
+    global SCHEDULEDSEND
+    SCHEDULEDSEND.append([channel_id, content])
+
 #主时钟
 log("启动主时钟...","DEBUG")
 while True:
@@ -41,6 +48,9 @@ while True:
             if make_log == True:
                 thread.start_new_thread(save,(msg,))
             thread.start_new_thread(match,(msg,))
+        if SCHEDULEDSEND:
+            thread.start_new_thread(message_create,(SCHEDULEDSEND[0][0], SCHEDULEDSEND[0][1]))
+            SCHEDULEDSEND.remove(SCHEDULEDSEND[0])
 
             adapter.MASSAGE_LIST.remove(msg)
     time.sleep(1)
