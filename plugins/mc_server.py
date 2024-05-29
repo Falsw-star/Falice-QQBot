@@ -20,24 +20,24 @@ def 查询并添加(msg,special_content):#查询，添加，惊变
         IP = "frp-fee.top:27502"
     else:
         IP=msg["content"][2:].lstrip()
-        try:
-            server = JavaServer.lookup(IP)
-            server.ping
-            status = server.status()        
-            latency = server.ping()
-            speak = f"Java版\n名称:{status.motd.parsed[0]}\nIP:{IP}\n延时:{int(latency)}ms\n版本:{status.version.name}\n在线人数:{status.players.online}\n"
+    try:
+        server = JavaServer.lookup(IP)
+        server.ping
+        status = server.status()        
+        latency = server.ping()
+        speak = f"Java版\n名称:{status.motd.parsed[0]}\nIP:{IP}\n延时:{int(latency)}ms\n版本:{status.version.name}\n在线人数:{status.players.online}\n"
+        opt(msg,"mc",IP+"-"+status.motd.parsed[0],"1",False)
+    except:
+        speak = "Java版\n未成功连接\n"
+    if  "查询" in  msg["content"] :
+        try:   
+            server = BedrockServer.lookup(IP)
+            status = server.status()
+            speak  += f"\n基岩版\n名称:{status.motd.parsed[0]}\n当前人数:{status.players.online}\n延时:{int(status.latency)}ms"
             opt(msg,"mc",IP+"-"+status.motd.parsed[0],"1",False)
         except:
-            speak = "Java版\n未成功连接\n"
-        if  "查询" in  msg["content"] :
-            try:   
-                server = BedrockServer.lookup(IP)
-                status = server.status()
-                speak  += f"\n基岩版\n名称:{status.motd.parsed[0]}\n当前人数:{status.players.online}\n延时:{int(status.latency)}ms"
-                opt(msg,"mc",IP+"-"+status.motd.parsed[0],"1",False)
-            except:
-                speak  += "基岩版\n未成功连接"
-        message_create(msg["guild"]["id"],f"<at id='{msg['user']['id']}'/>喵\n{speak}")
+            speak  += "基岩版\n未成功连接"
+    message_create(msg["guild"]["id"],f"<at id='{msg['user']['id']}'/>喵\n{speak}")
 def list(msg,special_content):    
     opt(msg,"mc")
 def de(msg,special_content):
