@@ -73,7 +73,7 @@ def match_trigger(content: str, type: str):
 #匹配权限
 def match_permission(user_id, permission):
     permissions = {
-        "superusers": ["3435578673","2538523045"]
+        "superusers": ["2123410230"]
     }
     if permission == "all":
         return True

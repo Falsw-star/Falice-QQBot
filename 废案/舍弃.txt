@@ -1,0 +1,29 @@
+def progress(msg, level):#多线程中进度保存
+    path = "progress/mc"
+    file_path = "progress/mc/" + msg["guild"]["name"] + msg["guild"]["id"] + ".txt"
+    if not os.path.exists(path):
+        os.makedirs(path)
+    with open(file_path, "a+") as f:
+        f.seek(0)  # 将文件指针移回文件开头
+        lines = f.readlines()
+        found = False
+        for line_number, line in enumerate(lines):
+            if msg["user"]["id"] in line:
+                lines[line_number] = msg["user"]["id"] + ":" + level + "\n"
+                found = True
+                break
+        if not found:
+            lines.append(msg["user"]["id"] + ":" + level + "\n")
+        with open(file_path, "w+") as fe:
+            fe.writelines(lines)
+
+
+pgs ={
+    "plugin_name":{
+        "id":""
+    }
+}#用于区分用户
+def progress(msg,level,plugin_name):#msg is id
+    if  level != "z":
+        pgs[plugin_name][msg['user']["id"]]=level
+    return pgs[plugin_name][msg["user"]['id']]

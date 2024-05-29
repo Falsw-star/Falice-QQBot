@@ -1,0 +1,5 @@
+以加载插件：
+mc_server
+help
+image_save
+image_send

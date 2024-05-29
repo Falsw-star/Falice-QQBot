@@ -27,6 +27,8 @@ def log(content, level: str = "INFO"):
         tag =  "[" + str(paint(level, "blue")) + "]"
     elif level == "CHAT":
         tag = "[" + str(paint(level, "yellow")) + "]"
+    elif level == "Minecraft":
+        tag = "[" + str(paint(level, "green")) + "]"
     else:
         tag = level
     print(tag + " : " + content)
