@@ -1,5 +1,5 @@
 from matcher import load_trigger, plugin_registry
-from adapters.adapter_satori import message_create
+from sender import ssend
 
 #要运作的函数
 def main(msg, special_content):
@@ -8,7 +8,7 @@ def main(msg, special_content):
         for arg in special_content:
             text += arg + " "
         text = text.strip()
-        message_create(msg["guild"]["id"], text)
+        ssend(msg["guild"]["id"], text)
 
 def loads():
     #注册插件名
