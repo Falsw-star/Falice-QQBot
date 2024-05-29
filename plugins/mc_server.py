@@ -8,14 +8,12 @@ from mcstatus import BedrockServer
 from op import opt
 from op import MC
 import subprocess
-import psutil 
             
 def mc(msg,special_content):
     if msg["content"] == "我的世界" :
         message_create(msg["guild"]["id"],f"<at id='{msg['user']['id']}'/>喵\n查询惊变[惊变]\n开启服务器[启动]\n关闭服务器[关闭]\n服务器列表[列表]\n查询并添加[查询+地址]\n删除服务器[删除+名字]]")
 
 def 查询并添加(msg,special_content):#查询，添加，惊变
-    file_path = "progress/mc/" + msg["guild"]["name"] + msg["guild"]["id"] + ".txt"
     if  msg["content"] == "惊变" :
         IP = "frp-fee.top:27502"
     else:

@@ -1,4 +1,7 @@
 import time
+import os
+cfp = os.getcwd()#最开始的文件夹路径
+cfp = cfp.replace("\\","/")
 
 def paint(text, color):
     if color == "green":
@@ -34,7 +37,7 @@ def log(content, level: str = "INFO"):
     print(tag + " : " + content)
 
 def save(msg):
-     with open("logs/" + msg["guild"]["name"] + '-' + msg["guild"]["id"] + '.log', "a") as f:
+    with open(cfp+"/logs/" + msg["guild"]["name"] + '-' + msg["guild"]["id"] + '.log', "a") as f:
         f.write("\n[" + time.asctime() + "]" + msg["user"]["name"] + "(" + msg["user"]["id"] + ") : " + msg["content"])
         f.close()
      

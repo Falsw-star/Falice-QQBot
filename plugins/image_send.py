@@ -1,21 +1,16 @@
 from matcher import load_trigger, plugin_registry
 from adapters.adapter_satori import message_create
 import os#创建文件夹
-import requests#网址爬取
-import time
-try:
-    import thread #type: ignore
-except ImportError:
-    import _thread as thread
-import re#正则表达式？
 from logger import log
 import random
+from logger import cfp
+
 def 捞图(msg,special_content):
     if msg["content"] == "图":
-        folder_path = "image/" + msg["guild"]["name"] + '-' + msg["guild"]["id"]
+        folder_path = cfp + "/image/" + msg["guild"]["name"] + '-' + msg["guild"]["id"]
         image_files = get_image_files(folder_path)
         random_image = select_random_image(image_files)
-        message_create(msg["guild"]["id"],f"<at id='{msg['user']['id']}'/><img src='file:///C:/Users/LLH/Documents/Falice-QQBot/{folder_path}/{random_image}'/>")
+        message_create(msg["guild"]["id"],f"<at id='{msg['user']['id']}'/><img src='file:///{folder_path}/{random_image}'/>")
     
 def get_image_files(folder_path):
     image_extensions = ['.jpg', '.jpeg', '.png', '.gif']# 其实只有jpg

@@ -1,11 +1,10 @@
 import os
-from logger import log
 from adapters.adapter_satori import message_create
-
+from logger import cfp
 MC = {"100days":"0"}
 
 def opt(msg,name,content="",t="0",block=True):#msg 回复讯问人员 ma回复内容 content字符串，添加要存储的内容  name 字符串，存储名称 位置/save/name 有去重功能 c 1,添加，2，删除，3，列举
-    path = "save/"+name+".txt"
+    path = cfp+"/save/"+name+".txt"
     content=content.strip()
     if  t == "1":        
         if not os.path.exists("save/"):

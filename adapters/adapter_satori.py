@@ -6,6 +6,10 @@ except ImportError:
     import _thread as thread
 import time
 from logger import log
+import os
+
+cfp = os.getcwd()#最开始的文件夹路径
+cfp = cfp.replace("\\","/")
 
 #变量
 STATUS = False #总开关

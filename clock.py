@@ -9,8 +9,6 @@ from matcher import match, run_services
 from logger import log, save
 from adapters.adapter_satori import message_create
 
-
-
 log("正在启动适配器线程...","DEBUG")
 thread.start_new_thread(adapter.run, ())
 

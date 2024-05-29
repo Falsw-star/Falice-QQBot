@@ -1,6 +1,5 @@
 from logger import log
 
-
 PLUGINLIST = {}
 
 #注册插件
