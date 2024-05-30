@@ -3,10 +3,9 @@ from adapters.adapter_satori import message_create
 from mcstatus import JavaServer
 from logger import log
 import os
-import time
 from mcstatus import BedrockServer
 from op import opt
-from op import MC
+from op import MC,USER,CONTENT
 import subprocess
             
 def mc(msg,special_content):
@@ -41,10 +40,11 @@ def list(msg,special_content):
 def de(msg,special_content):
     opt(msg,"mc",msg['content'][2:].lstrip(),"2")
 
-
-MC['100days']=="0"
+USER = ""
+MC['100days']="0"
 L = True# 是否输出到控制台
 def is_mc_running(msg,special_content):
+    global MC,USER,CONTENT
     if  msg["content"] == "启动" :
         if MC['100days']=="0":#0允许开启
             message_create(msg["guild"]["id"],f"<at id='{msg['user']['id']}'/>喵\n正在启动喵")
@@ -54,14 +54,16 @@ def is_mc_running(msg,special_content):
             message_create(msg["guild"]["id"],f"<at id='{msg['user']['id']}'/>喵\n已经启动了喵")   
  
 def is_mc_stop(msg,special_content):
+    global MC,USER,CONTENT
     if msg["content"] == "关闭" :
         if MC['100days']=="3":
             message_create(msg["guild"]["id"],f"<at id='{msg['user']['id']}'/>喵\n正在关闭喵")
             MC['100days']="4"
         else:
             message_create(msg["guild"]["id"],f"<at id='{msg['user']['id']}'/>喵\n未开启喵")
-    
+
 def run(msg):
+    global MC,USER,CONTENT
     new_directory = "F:/MISAKA_MIKOTO/YB17202H/我的世界/server/惊变"#切换工作目录
     os.chdir(new_directory)
     bat_file_path = r"F:/MISAKA_MIKOTO/YB17202H/我的世界/server/惊变/run.bat"
@@ -69,7 +71,10 @@ def run(msg):
         process = subprocess.Popen(bat_file_path, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
         while True:
             output = process.stdout.readline()
-            if output == b'' and process.poll() is not None:
+            if b'>pause' in output :
+                message_create(msg["guild"]["id"],f"<at id='{msg['user']['id']}'/>喵\n启动失败")
+                log("启动失败","Minecraft")
+                MC['100days'] = "0"
                 break
             if output:
                 if L :
@@ -82,9 +87,20 @@ def run(msg):
                     MC['100days']="0"
                 if "按任意键" in output.strip().decode('gbk'):
                     message_create(msg["guild"]["id"],f"<at id='{msg['user']['id']}'/>\n服务器已关闭")
+##                if MC['100days']=="5":
+
+##                    MC['100days']="3"
     except:
         message_create(msg["guild"]["id"],f"<at id='{msg['user']['id']}'/>喵\n启动失败")
         MC['100days']="0"
+
+##def qq_server(msg,special_content):
+##    global MC,USER,CONTENT
+##    if  msg["guild"]['id'] == '636150815' and MC['100days']=="3":
+##        USER =  msg["user"]['id']
+
+
+
 
 
 def loads():
@@ -108,3 +124,6 @@ def loads():
 
     plugin_registry(name="is_mc_stop", usage="关闭",status=True)
     load_trigger(name="is_mc_running", type="start", func=is_mc_stop, trigger="关闭", permission="all")
+
+##    plugin_registry(name="qq_server", usage="将qq消息传入我的世界",status=True)
+##   load_trigger(name="qq_server", type="all", func=qq_server, permission="all")
