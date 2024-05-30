@@ -18,6 +18,7 @@ def plugin_registry(name: str, discription: str = "", usage: str = "", display: 
             "keyword": {},
             "start": {},
             "end": {},
+            "all": []
         }
     }
     PLUGINLIST[name] = plugin
@@ -28,12 +29,18 @@ def load_trigger(name: str, type: str, func, trigger: str, block: bool = False, 
     if name not in PLUGINLIST:
         log("在注册触发器时未发现相应已注册插件，请确保在插件中先注册插件再注册触发器", "WARNING")
     else:
-        one_trigger = {
-            "block" : block,
-            "permission": permission,
-            "func": func
-        }
-        PLUGINLIST[name]["triggers"][type][trigger] = one_trigger
+        if type == "all":
+            PLUGINLIST[name]["triggers"][type].append({
+                "func" : func,
+                "permission" : permission
+            })
+        else:
+            one_trigger = {
+                "block" : block,
+                "permission": permission,
+                "func": func
+            }
+            PLUGINLIST[name]["triggers"][type][trigger] = one_trigger
 
 #匹配触发器
 def match_trigger(content: str, type: str):
@@ -139,6 +146,22 @@ def on_text(user_id: str, content: str):
                         return result
     return result
 
+def on_all(user_id: str):
+    result = {
+        "blocked": False,
+        "functions": [],
+        "special_content": None
+    }
+    for plugin_key in PLUGINLIST:
+        plugin = PLUGINLIST[plugin_key]
+        if plugin["status"] == True:
+            for one_trigger in plugin["triggers"]["all"]:
+                if(match_permission(user_id=user_id, permission=one_trigger["permission"])):
+                    result["functions"].append(one_trigger["func"])
+                else:
+                    log(f"{plugin_key}中的触发器权限不足(all)")
+    return result
+
 #主处理函数
 def run(result, msg):
     for function in result["functions"]:
@@ -152,6 +175,7 @@ def run(result, msg):
 def match(msg):
     user_id = msg["user"]["id"]
     content = msg["content"]
+    run(result=on_all(user_id=user_id), msg=msg)
     if run(result=on_cmd(user_id=user_id, content=content), msg=msg):
         return
     elif run(result=on_text(user_id=user_id, content=content), msg=msg):
