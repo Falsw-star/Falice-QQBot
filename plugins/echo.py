@@ -9,7 +9,6 @@ def main(msg, special_content):
         for arg in special_content:
             text += arg + " "
         text = text.strip()
-        log(msg["cid"])
         ssend(msg["cid"], text)
 
 def loads():
