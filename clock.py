@@ -48,7 +48,7 @@ while True:
 
             if make_log == True:
                 thread.start_new_thread(save,(msg,))
-            thread.start_new_thread(match,(msg,))
+            match(msg)
 
             if GOTLIST:
                 msg_channel_id = msg["guild"]["id"]

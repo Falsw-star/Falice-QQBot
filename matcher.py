@@ -1,5 +1,8 @@
 from logger import log
-
+try:
+    import thread #type: ignore
+except ImportError:
+    import _thread as thread
 
 PLUGINLIST = {}
 
@@ -165,7 +168,7 @@ def on_all(user_id: str):
 #主处理函数
 def run(result, msg):
     for function in result["functions"]:
-        function(msg, result["special_content"])
+        thread.start_new_thread(function,(msg, result["special_content"]))
     if result["blocked"] == True:
         return True
     else:
@@ -189,4 +192,4 @@ def run_services():
         if plugin["status"] == True:
             for service_key in plugin["triggers"]["services"]:
                 function = plugin["triggers"]["services"][service_key]["func"]
-                function()
+                thread.start_new_thread(function, ())
