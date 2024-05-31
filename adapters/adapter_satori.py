@@ -58,20 +58,34 @@ def on_message(ws, message):
             STATUS = True
         elif op == 0: #events
             global MASSAGE_LIST
-            msg = {
-                "type": body["type"], #消息类型 str
-                "timestamp": body["timestamp"], #时间戳 int
-                "user": { #消息发送者 dict
-                    "id": body["user"]["id"], #发送者id(QQ号) str(int)
-                    "name": "", #发送者昵称 str
-                    "avatar": body["user"]["avatar"] #发送者头像 str(url)
-                },
-                "guild": body["guild"], #消息所在群 dict{"id":群号 str(int), "name":群名 str, "avatar":群头 str(url)}
-                "id": body["message"]["id"], #本条消息id str(int)
-                "content": body["message"]["content"] #消息内容 str
-            }
-            if body["member"]:
-                msg["user"]["name"] = body["member"]["nick"]
+            log(body)
+            if body["channel"]["type"] == 0:
+                msg = {
+                    "type": 0, #消息类型 int (私聊)
+                    "timestamp": body["timestamp"], #时间戳 int
+                    "user": { #消息发送者 dict
+                        "id": body["user"]["id"], #发送者id(QQ号) str(int)
+                        "name": "", #发送者昵称 str
+                        "avatar": body["user"]["avatar"] #发送者头像 str(url)
+                    },
+                    "guild": body["guild"], #消息所在群 dict{"id":群号 str(int), "name":群名 str, "avatar":群头 str(url)}
+                    "id": body["message"]["id"], #本条消息id str(int)
+                    "content": body["message"]["content"] #消息内容 str
+                }
+                if body["member"]:
+                    msg["user"]["name"] = body["member"]["nick"]
+            elif body["channel"]["type"] == 1:
+                msg = {
+                    "type": 1, #消息类型 int (私聊)
+                    "timestamp": body["timestamp"], #时间戳 int
+                    "user": { #消息发送者 dict
+                        "id": body["user"]["id"], #发送者id(QQ号) str(int)
+                        "name": "", #发送者昵称 str
+                        "avatar": body["user"]["avatar"] #发送者头像 str(url)
+                    },
+                    "id": body["message"]["id"], #本条消息id str(int)
+                    "content": body["message"]["content"] #消息内容 str
+                }
             log(msg["guild"]["name"] + "-" + msg["user"]["name"] + f"({msg['user']['id']}) : " + msg["content"], "CHAT")
             MASSAGE_LIST.append(msg)
     except Exception as e:
