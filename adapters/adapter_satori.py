@@ -15,7 +15,7 @@ LOGIN = { #账号信息
     "id": "",
     "status": None
 }
-HEARTBEATS = []
+HEARTBEATS = 0
 
 def on_open(ws):
 
@@ -56,9 +56,11 @@ def on_message(ws, message):
             #总开关，启动
             global STATUS
             STATUS = True
+        elif op == 2: # pongs
+            global HEARTBEATS
+            HEARTBEATS += 1
         elif op == 0: #events
             global MASSAGE_LIST
-            log(body)
             if body["channel"]["type"] == 0:
                 msg = {
                     "type": 0, #消息类型 int (私聊)
@@ -70,7 +72,8 @@ def on_message(ws, message):
                     },
                     "guild": body["guild"], #消息所在群 dict{"id":群号 str(int), "name":群名 str, "avatar":群头 str(url)}
                     "id": body["message"]["id"], #本条消息id str(int)
-                    "content": body["message"]["content"] #消息内容 str
+                    "content": body["message"]["content"], #消息内容 str
+                    "cid": body["channel"]["id"] #频道id(要回复的对象) str
                 }
                 if body["member"]:
                     msg["user"]["name"] = body["member"]["nick"]
@@ -84,9 +87,10 @@ def on_message(ws, message):
                         "avatar": body["user"]["avatar"] #发送者头像 str(url)
                     },
                     "id": body["message"]["id"], #本条消息id str(int)
-                    "content": body["message"]["content"] #消息内容 str
+                    "content": body["message"]["content"], #消息内容 str
+                    "cid": body["channel"]["id"] #频道id(要回复的对象) str
                 }
-            log(msg["guild"]["name"] + "-" + msg["user"]["name"] + f"({msg['user']['id']}) : " + msg["content"], "CHAT")
+            log(msg["cid"] + "-" + msg["user"]["name"] + f"({msg['user']['id']}) : " + msg["content"], "CHAT")
             MASSAGE_LIST.append(msg)
     except Exception as e:
         pass

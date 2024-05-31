@@ -51,7 +51,7 @@ while True:
             match(msg)
 
             if GOTLIST:
-                msg_channel_id = msg["guild"]["id"]
+                msg_channel_id = msg["cid"]
                 msg_user_id = msg["user"]["id"]
                 for got in GOTLIST:
                     if got[0] == msg_channel_id and got[1] == msg_user_id:

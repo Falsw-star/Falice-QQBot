@@ -8,22 +8,22 @@ def main():
     log("servicetest")
 
 def startwith(msg,sc):
-    message_create(msg["guild"]["id"],"start!")
+    message_create(msg["cid"],"start!")
 
 def endwith(msg,sc):
-    message_create(msg["guild"]["id"],"end!")
+    message_create(msg["cid"],"end!")
 
 def keyword(msg,sc):
-    message_create(msg["guild"]["id"],"keyword!")
+    message_create(msg["cid"],"keyword!")
 
 def all_test_show(msg,sc):
     global mn
-    message_create(msg["guild"]["id"],f"从上次show以来收到了{mn[msg['guild']['id']]}条消息！")
-    mn[msg["guild"]["id"]] = 0
+    message_create(msg["cid"],f"从上次show以来收到了{mn[msg['guild']['id']]}条消息！")
+    mn[msg["cid"]] = 0
 
 def mn_add(msg,sc):
     global mn
-    key = msg["guild"]["id"]
+    key = msg["cid"]
     if key in mn.keys():
         mn[key] += 1
     else:

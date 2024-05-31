@@ -13,7 +13,7 @@ def main(msg, special_content):
         for arg in special_content:
             text += arg + " "
         text = text.strip()
-        message_create(msg["guild"]["id"], text)
+        message_create(msg["cid"], text)
 
 def loads():
     #注册插件名
@@ -90,21 +90,24 @@ log("当然如果你传入的日志等级不在这之中的话，也会被打上
 
 在echo的`main`中，我们对`special_content`做了一些处理，生成了要回复的内容。那么怎么回复呢？
 
-这通过适配器中的`message_create`来实现。这个函数需求的第一个参数是群组id（这你可以从`msg`中找到），第二个是需要发送的消息内容。
+这通过sender中的`send_message`来实现。这个函数需求的第一个参数是`channel_id`（这你可以从`msg["cid"]`中找到），第二个是需要发送的消息内容。
+
+`msg[cid]`可能是群号，也可能是"private:" + qq号的形式。无论如何，你拿来用就好。
 
 ```
-from adapters.satori_adapter import message_create
+from sender import send_message
 
 def main(msg, special_content):
 
-    message_create("114514", "我喜欢吃玉米")
+    send_message("114514", "我喜欢吃玉米")
+    send_message("private:114514", "我吃玉米了")
 ```
 
-这样机器人就会在群聊“114514”发送一条消息“我喜欢吃玉米”。
+这样机器人就会在群聊“114514”和私聊“114514”分别发送一条消息“我喜欢吃玉米”。
 
 将来会加入其他的更为通用的，或者有各自优势的发送信息的方式。
 
-有关adapter里可以使用的API，你可以自己去看，我会再写文档的。
+有关adapter和sender里可以使用的API，你可以自己去看，我会再写文档的。
 
 ***
 
