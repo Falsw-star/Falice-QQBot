@@ -16,9 +16,11 @@ thread.start_new_thread(adapter.run, ())
 from plugins import echo
 from plugins import trigger_test
 from plugins import get_test
+from plugins import db_test
 trigger_test.loads()
 echo.loads()
 get_test.loads()
+db_test.loads()
 
 from matcher import PLUGINLIST
 log("插件列表: " + str(PLUGINLIST),"DEBUG")

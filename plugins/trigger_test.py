@@ -32,7 +32,7 @@ def mn_add(msg,sc):
 
 
 def loads():
-    plugin_registry(name="TriggerTest", status=True)
+    plugin_registry(name="TriggerTest", status=False)
     load_trigger(name="TriggerTest",type="start",func=startwith,trigger="114514",block=True)
     load_trigger(name="TriggerTest",type="end",func=endwith,trigger="114514",block=True)
     load_trigger(name="TriggerTest",type="keyword",func=keyword,trigger="114514")
