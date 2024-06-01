@@ -104,7 +104,7 @@ def on_close(ws):
     STATUS = False
 
 def run():
-    url = "ws://127.0.0.1:5500/v1/events"
+    url = "ws://localhost:5500/v1/events"
     ws = websocket.WebSocketApp(
         url=url,
         on_open=on_open,
@@ -117,7 +117,7 @@ def run():
     ws.run_forever()
 
 #calling_api部分
-base = "http://127.0.0.1:5500/v1/"
+base = "http://localhost:5500/v1/"
 
 data = {}
 def request(url, data = data):

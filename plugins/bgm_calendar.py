@@ -32,6 +32,7 @@ def calendar(day,msg):
     reply += "\n数据来源：https://api.bgm.tv/calendar"
     ssend(msg['cid'],reply)
     return
+
 days = [1,2,3,4,5,6,7]
 def bgm_handle(msg,sc):
     if sc:

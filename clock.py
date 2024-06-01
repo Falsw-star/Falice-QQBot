@@ -17,10 +17,16 @@ from plugins import echo
 from plugins import trigger_test
 from plugins import get_test
 from plugins import db_test
-trigger_test.loads()
+from plugins import mcskin
+from plugins import netease_music
+from plugins import bgm_calendar
 echo.loads()
+trigger_test.loads()
 get_test.loads()
 db_test.loads()
+mcskin.loads()
+netease_music.loads()
+bgm_calendar.loads()
 
 from matcher import PLUGINLIST
 log("插件列表: " + str(PLUGINLIST),"DEBUG")
