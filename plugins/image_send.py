@@ -7,10 +7,10 @@ from logger import cfp
 
 def 捞图(msg,special_content):
     if msg["content"] == "图":
-        folder_path = cfp + "/image/" + msg["guild"]["name"] + '-' + msg["guild"]["id"]
+        folder_path = cfp + "/image/" + msg["guild"]["name"] + '-' + msg['cid']
         image_files = get_image_files(folder_path)
         random_image = select_random_image(image_files)
-        message_create(msg["guild"]["id"],f"<at id='{msg['user']['id']}'/><img src='file:///{folder_path}/{random_image}'/>")
+        message_create(msg['cid'],f"<at id='{msg['user']['id']}'/><img src='file:///{folder_path}/{random_image}'/>")
     
 def get_image_files(folder_path):
     image_extensions = ['.jpg', '.jpeg', '.png', '.gif']# 其实只有jpg

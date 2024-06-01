@@ -12,7 +12,7 @@ def 删除(msg,special_content):
     opt(msg,'help',msg['content'][3:],"2")
 def help(msg,special_content):
     opt(msg,'help')
-   
+    
 def loads():
     plugin_registry(name="help", usage="/help",status=True)
     load_trigger(name="help", type="cmd", func=help, trigger="help", permission="all")

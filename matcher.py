@@ -1,5 +1,8 @@
 from logger import log
-
+try:
+    import thread #type: ignore
+except ImportError:
+    import _thread as thread
 
 PLUGINLIST = {}
 
@@ -80,7 +83,7 @@ def match_trigger(content: str, type: str):
 #匹配权限
 def match_permission(user_id, permission):
     permissions = {
-        "superusers": ["2123410230","2538523045"]
+        "superusers": ["2123410230","3184495396","2115236412"]
     }
     if permission == "all":
         return True
@@ -165,7 +168,7 @@ def on_all(user_id: str):
 #主处理函数
 def run(result, msg):
     for function in result["functions"]:
-        function(msg, result["special_content"])
+        thread.start_new_thread(function,(msg, result["special_content"]))
     if result["blocked"] == True:
         return True
     else:
@@ -189,4 +192,4 @@ def run_services():
         if plugin["status"] == True:
             for service_key in plugin["triggers"]["services"]:
                 function = plugin["triggers"]["services"][service_key]["func"]
-                function()
+                thread.start_new_thread(function, ())

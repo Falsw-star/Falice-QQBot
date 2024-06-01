@@ -6,10 +6,6 @@ except ImportError:
     import _thread as thread
 import time
 from logger import log
-import os
-
-cfp = os.getcwd()#最开始的文件夹路径
-cfp = cfp.replace("\\","/")
 
 #变量
 STATUS = False #总开关
@@ -19,7 +15,7 @@ LOGIN = { #账号信息
     "id": "",
     "status": None
 }
-HEARTBEATS = []
+HEARTBEATS = 0
 
 def on_open(ws):
 
@@ -60,23 +56,41 @@ def on_message(ws, message):
             #总开关，启动
             global STATUS
             STATUS = True
+        elif op == 2: # pongs
+            global HEARTBEATS
+            HEARTBEATS += 1
         elif op == 0: #events
             global MASSAGE_LIST
-            msg = {
-                "type": body["type"], #消息类型 str
-                "timestamp": body["timestamp"], #时间戳 int
-                "user": { #消息发送者 dict
-                    "id": body["user"]["id"], #发送者id(QQ号) str(int)
-                    "name": "", #发送者昵称 str
-                    "avatar": body["user"]["avatar"] #发送者头像 str(url)
-                },
-                "guild": body["guild"], #消息所在群 dict{"id":群号 str(int), "name":群名 str, "avatar":群头 str(url)}
-                "id": body["message"]["id"], #本条消息id str(int)
-                "content": body["message"]["content"] #消息内容 str
-            }
-            if body["member"]:
-                msg["user"]["name"] = body["member"]["nick"]
-            log(msg["guild"]["name"] + "-" + msg["user"]["name"] + f"({msg['user']['id']}) : " + msg["content"], "CHAT")
+            if body["channel"]["type"] == 0:
+                msg = {
+                    "type": 0, #消息类型 int (私聊)
+                    "timestamp": body["timestamp"], #时间戳 int
+                    "user": { #消息发送者 dict
+                        "id": body["user"]["id"], #发送者id(QQ号) str(int)
+                        "name": "", #发送者昵称 str
+                        "avatar": body["user"]["avatar"] #发送者头像 str(url)
+                    },
+                    "guild": body["guild"], #消息所在群 dict{"id":群号 str(int), "name":群名 str, "avatar":群头 str(url)}
+                    "id": body["message"]["id"], #本条消息id str(int)
+                    "content": body["message"]["content"], #消息内容 str
+                    "cid": body["channel"]["id"] #频道id(要回复的对象) str
+                }
+                if body["member"]:
+                    msg["user"]["name"] = body["member"]["nick"]
+            elif body["channel"]["type"] == 1:
+                msg = {
+                    "type": 1, #消息类型 int (私聊)
+                    "timestamp": body["timestamp"], #时间戳 int
+                    "user": { #消息发送者 dict
+                        "id": body["user"]["id"], #发送者id(QQ号) str(int)
+                        "name": "", #发送者昵称 str
+                        "avatar": body["user"]["avatar"] #发送者头像 str(url)
+                    },
+                    "id": body["message"]["id"], #本条消息id str(int)
+                    "content": body["message"]["content"], #消息内容 str
+                    "cid": body["channel"]["id"] #频道id(要回复的对象) str
+                }
+            log(msg["cid"] + "-" + msg["user"]["name"] + f"({msg['user']['id']}) : " + msg["content"], "CHAT")
             MASSAGE_LIST.append(msg)
     except Exception as e:
         pass
@@ -90,7 +104,7 @@ def on_close(ws):
     STATUS = False
 
 def run():
-    url = "ws://localhost:5500/v1/events"
+    url = "ws://127.0.0.1:5500/v1/events"
     ws = websocket.WebSocketApp(
         url=url,
         on_open=on_open,
@@ -103,10 +117,11 @@ def run():
     ws.run_forever()
 
 #calling_api部分
-base = "http://localhost:5500/v1/"
+base = "http://127.0.0.1:5500/v1/"
 
 data = {}
 def request(url, data = data):
+    log("CallingAPI: request_post", "DEBUG")
     token = "d003b6c251a03919984396e35b5d324b924a2494c3c122c9ad6b56760681dcdd"
     headers = {
         "Content-Type": "application/json",

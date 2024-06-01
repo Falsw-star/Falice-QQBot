@@ -8,7 +8,7 @@ def main(msg, special_content):
         for arg in special_content:
             text += arg + " "
         text = text.strip()
-        message_create(msg["guild"]["id"], text)
+        message_create(msg["cid"], text)
 
 def loads():
     #注册插件名

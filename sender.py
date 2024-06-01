@@ -25,7 +25,7 @@ def get(channel_id: str, user_id: str, ask_content: str, timeout: int = 20):
     global GOTLIST
     GOTLIST.append([channel_id, user_id])
     log(ask_content, "INFO")
-    message_create(channel_id, f"<at id='{user_id}'>{ask_content}")
+    message_create(channel_id, f"<at id='{user_id}'/>{ask_content}")
     for i in range(0, timeout):
         if GOT_RSP:
             for rsp in GOT_RSP:

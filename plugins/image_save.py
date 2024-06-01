@@ -18,7 +18,7 @@ def image(msg,special_content):
     thread.start_new_thread(run,(msg,))
 
 def run(msg): 
-    path =cfp+"/image/" + msg["guild"]["name"] + '-' + msg["guild"]["id"]
+    path =cfp+"/image/" + msg["guild"]["name"] + '-' + msg['cid']
     if not os.path.exists(path):
         os.makedirs(path)#创建文件夹
 
