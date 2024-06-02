@@ -29,7 +29,7 @@ def calendar(day,msg):
                 reply = reply + bangumi["name"] + "\n"
             else:
                 reply = reply + bangumi["name_cn"] + " (" + bangumi["name"] + ")\n"
-    reply += "\n数据来源：https://api.bgm.tv/calendar"
+    reply += "\n数据来源:https://api.bgm.tv/calendar"
     ssend(msg['cid'],reply)
     return
 days = [1,2,3,4,5,6,7]
@@ -51,5 +51,5 @@ def bgm_handle(msg,sc):
     else:
         calendar(datetime.datetime.now().weekday(), msg)
 def loads():
-    plugin_registry(name="bangumi_calendar", usage="/bgm",status=True)
+    plugin_registry(name="bangumi_calendar", usage="{/bgm}查询当天番剧\n{/bgm 周(数字)}查询本周数番剧\n{/bgm all}查询本周所有番剧",status=True)
     load_trigger(name="bangumi_calendar", type="cmd", func=bgm_handle, trigger="bgm", permission="all")

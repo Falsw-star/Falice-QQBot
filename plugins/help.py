@@ -3,21 +3,31 @@ from adapters.adapter_satori import message_create
 from matcher import PLUGINLIST #这个字典保存着所有的插件信息
 from logger import log
 import os
-from op import opt
+from sender import ssend
 
 #要运作的函数
-def 添加(msg,special_content):
-    opt(msg,'help',msg['content'][3:],"1")
-def 删除(msg,special_content):
-    opt(msg,'help',msg['content'][3:],"2")
-def help(msg,special_content):
-    opt(msg,'help')
-    
+def help(msg,sc):
+    if len(sc) == 0:
+        name_list = []
+        speak = "已加载插件\n"
+        global PLUGINLIST
+        for i in PLUGINLIST:
+            name_list.append(i)
+        name_list = sorted(name_list, key=lambda x: (len(x), x))
+        for   i in name_list:
+            speak += i + "\n"
+        speak += "输入{/help 插件名}查看插件帮助"
+        ssend(msg['cid'],speak)
+        return
+    else :
+        if len(sc) == 1:
+            try:
+                ssend(msg['cid'],f"插件名:\n{sc[0]}\n使用说明:\n{PLUGINLIST[sc[0]]['usage']}")
+            except:
+                ssend(msg['cid'],"无此插件")
+        else:
+            ssend(msg['cid'],"格式错误")
 def loads():
-    plugin_registry(name="help", usage="/help",status=True)
+    plugin_registry(name="help", usage="{/help}获取插件列表{/help 插件名}查看插件说明",status=True)
     load_trigger(name="help", type="cmd", func=help, trigger="help", permission="all")
-    plugin_registry(name="添加", usage="/添加",status=True)
-    load_trigger(name="添加", type="cmd", func=添加, trigger="添加", permission="superusers")
-    plugin_registry(name="删除", usage="/删除",status=True)
-    load_trigger(name="删除", type="cmd", func=删除, trigger="删除", permission="superusers")
     

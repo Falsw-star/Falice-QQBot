@@ -24,18 +24,18 @@ class database:
     
     def exists(self):
         try:
-            with open(f"db/{self.db_name}.json", "r", encoding="utf-8") as f:
+            with open(f"{cfp}/db/{self.db_name}.json", "r", encoding="utf-8") as f:
                 return True
         except:
             return False
 
     def save(self):
-        with open(f"db/{self.db_name}.json", "w", encoding="utf-8") as f:
+        with open(f"{cfp}/db/{self.db_name}.json", "w", encoding="utf-8") as f:
             json.dump(self.data, f, ensure_ascii=False, indent=4)
 
 def exists(db_name: str):
     try:
-        with open(f"db/{db_name}.json", "r", encoding="utf-8") as f:
+        with open(f"{cfp}/db/{db_name}.json", "r", encoding="utf-8") as f:
             return True
     except:
         return False

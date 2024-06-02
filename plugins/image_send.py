@@ -24,5 +24,5 @@ def select_random_image(image_files):
     return random.choice(image_files)
 
 def loads():
-    plugin_registry(name="捞图", usage="图",status=True)
-    load_trigger(name="捞图", type="start", func = 捞图, trigger="图", permission="all")
+    plugin_registry(name="image_send", usage="{/捞图} 获取群聊历史图片",status=True)
+    load_trigger(name="image_send", type="start", func = 捞图, trigger="/捞图", permission="all")

@@ -32,5 +32,5 @@ def run(msg):
           file.write(picture.content)
           file.close()
 def loads():
-    plugin_registry(name="表情包存储", usage="自动完成，在表情包文件夹",status=True)
-    load_trigger(name="表情包存储", type="start", func= image, trigger="<img src=", permission="all")
+    plugin_registry(name="image_save", usage="自动收集群聊图片",status=True)
+    load_trigger(name="image_save", type="start", func= image, trigger="<img src=", permission="all")

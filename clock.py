@@ -13,23 +13,28 @@ log("正在启动适配器线程...","DEBUG")
 thread.start_new_thread(adapter.run, ())
 
 #编辑该区域导入模块
-from plugins import echo
-from plugins import trigger_test
+
+from plugins import help
+from plugins import mcskin
+from plugins import mc_server
 from plugins import image_save
 from plugins import image_send
-from plugins import mc_server
-from plugins import help
-from plugins import db_test
 from plugins import bgm_calendar
-bgm_calendar.loads()
-db_test.loads()
-image_save.loads()
+#from plugins import echo
+#from plugins import db_test
+#from plugins import get_test
+#from plugins import trigger_test
+
+help.loads()
+mcskin.loads()
+mc_server.loads()
 image_save.loads()
 image_send.loads()
-mc_server.loads()
-help.loads()
-trigger_test.loads()
-echo.loads()
+bgm_calendar.loads()
+#echo.loads()
+#db_test.loads()
+#get_test.loads()
+#trigger_test.loads()
 
 from matcher import PLUGINLIST
 log("插件列表: " + str(PLUGINLIST),"DEBUG")
@@ -76,4 +81,4 @@ while True:
             thread.start_new_thread(message_create,(SCHEDULEDSEND[0][0], SCHEDULEDSEND[0][1]))
             SCHEDULEDSEND.remove(SCHEDULEDSEND[0])
 
-    time.sleep(0.5)
+    time.sleep(0.1)
