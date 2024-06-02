@@ -20,6 +20,7 @@ from plugins import db_test
 from plugins import mcskin
 from plugins import netease_music
 from plugins import bgm_calendar
+from plugins import helper
 echo.loads()
 trigger_test.loads()
 get_test.loads()
@@ -27,6 +28,7 @@ db_test.loads()
 mcskin.loads()
 netease_music.loads()
 bgm_calendar.loads()
+helper.loads()
 
 from matcher import PLUGINLIST
 log("插件列表: " + str(PLUGINLIST),"DEBUG")
