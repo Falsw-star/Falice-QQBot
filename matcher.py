@@ -81,10 +81,8 @@ def match_trigger(content: str, type: str):
         return False
 
 #匹配权限
+from CONFIG import PERMISSIONS
 def match_permission(user_id, permission):
-    permissions = {
-        "superusers": ["3435578673","2538523045"]
-    }
     if permission == "all":
         return True
     elif permission == "not_self":
@@ -93,7 +91,7 @@ def match_permission(user_id, permission):
             return False
         else:
             return True
-    elif user_id in permissions[permission]:
+    elif user_id in PERMISSIONS[permission]:
         return True
     else:
         return False

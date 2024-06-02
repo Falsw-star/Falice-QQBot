@@ -1,4 +1,5 @@
 import time
+import os
 
 def paint(text, color):
     if color == "green":
@@ -25,6 +26,9 @@ def log(content, level: str = "INFO"):
         tag = "[" + str(paint(level, "purple")) + "]"
     elif level == "INFO":
         tag =  "[" + str(paint(level, "blue")) + "]"
+    elif level == "RUNTIME":
+        tag = "[" + str(paint(level, "purple")) + "]"
+        content = str(paint(content, "blue"))
     elif level == "CHAT":
         tag = "[" + str(paint(level, "yellow")) + "]"
     else:
@@ -32,7 +36,11 @@ def log(content, level: str = "INFO"):
     print(tag + " : " + content)
 
 def save(msg):
-     with open("logs/" + msg["guild"]["name"] + '-' + msg["cid"] + '.log', "a") as f:
+    if not os.path.exists("logs"):
+        os.mkdir("logs")
+    if msg["type"] == 1:
+        guild = ""
+    elif msg["type"] == 0:
+        guild = msg["guild"]["name"] + '-'
+    with open("logs/" + guild + msg["cid"] + '.log', "a") as f:
         f.write("\n[" + time.asctime() + "]" + msg["user"]["name"] + "(" + msg["user"]["id"] + ") : " + msg["content"])
-        f.close()
-     

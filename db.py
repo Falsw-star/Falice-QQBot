@@ -1,9 +1,12 @@
 import json
+import os
 
 class database:
     def __init__(self, db_name: str = ""):
         self.db_name = db_name
         self.data = {}
+        if not os.path.exists("db"):
+            os.mkdir("db")
     
     def open(self, new_db_name: str = ""):
         if new_db_name != "":
