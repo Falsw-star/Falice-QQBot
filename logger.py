@@ -1,8 +1,6 @@
 import time
 import os
-cfp = os.getcwd()#最开始的文件夹路径
-cfp = cfp.replace("\\","/")
-
+from folder_path import MAINPATH
 def paint(text, color):
     if color == "green":
         return f"\033[1;32m{text}\033[0m"
@@ -28,18 +26,25 @@ def log(content, level: str = "INFO"):
         tag = "[" + str(paint(level, "purple")) + "]"
     elif level == "INFO":
         tag =  "[" + str(paint(level, "blue")) + "]"
+    elif level == "RUNTIME":
+        tag = "[" + str(paint(level, "purple")) + "]"
+        content = str(paint(content, "blue"))
     elif level == "CHAT":
         tag = "[" + str(paint(level, "yellow")) + "]"
     elif level == "Minecraft":
-        tag = "[" + str(paint(level, "green")) + "]"
+        tag = "[" + str(paint(level, "yellow")) + "]"
     elif level == "mcsd":
-        tag = "[" + str(paint(level, "green")) + "]"
+        tag = "[" + str(paint(level, "yellow")) + "]" 
     else:
         tag = level
     print(tag + " : " + content)
 
 def save(msg):
-    with open(cfp+"/logs/" + msg["guild"]["name"] + '-' + msg["cid"] + '.log', "a") as f:
+    if not os.path.exists("logs"):
+        os.mkdir("logs")
+    if msg["type"] == 1:
+        guild = ""
+    elif msg["type"] == 0:
+        guild = msg["guild"]["name"] + '-'
+    with open(MAINPATH+"/logs/" + guild + msg["cid"] + '.log', "a") as f:
         f.write("\n[" + time.asctime() + "]" + msg["user"]["name"] + "(" + msg["user"]["id"] + ") : " + msg["content"])
-        f.close()
-     

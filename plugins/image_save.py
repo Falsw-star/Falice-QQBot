@@ -7,25 +7,21 @@ try:
 except ImportError:
     import _thread as thread
 import re#正则表达式？
-from logger import cfp
+from folder_path import MAINPATH
 
 def extract_strings(text):#提取网址
     pattern = r'"(.*?)"'
     result = re.findall(pattern, text)
     return result
-
 def image(msg,special_content):
     thread.start_new_thread(run,(msg,))
-
 def run(msg): 
-    path =cfp+"/image/" + msg["guild"]["name"] + '-' + msg['cid']
+    path =MAINPATH+"/image/" + msg["guild"]["name"] + '-' + msg['cid']
     if not os.path.exists(path):
         os.makedirs(path)#创建文件夹
-
     text = extract_strings(msg["content"])
     text = ''.join(text)
     text = text.replace("127.0.0.1","localhost")#转换后网址
-
     picture = requests.get(text)#图片获取
     if picture.status_code == 200:
         with open(path + '/'+text[32:]+".jpg", "wb") as file:

@@ -7,12 +7,12 @@ except ImportError:
 PLUGINLIST = {}
 
 #注册插件
-def plugin_registry(name: str, discription: str = "", usage: str = "", display: bool = True, status: bool = True):
+def plugin_registry(name: str, description: str = "", usage: str = "", display: bool = True, status: bool = True):
     global PLUGINLIST
     plugin = {
         "name": name,
         "status": status,
-        "discription": discription,
+        "description": description,
         "usage": usage,
         "display": display,
         "triggers": {
@@ -81,10 +81,8 @@ def match_trigger(content: str, type: str):
         return False
 
 #匹配权限
+from CONFIG import PERMISSIONS
 def match_permission(user_id, permission):
-    permissions = {
-        "superusers": ["2123410230","3184495396","2115236412"]
-    }
     if permission == "all":
         return True
     elif permission == "not_self":
@@ -93,7 +91,7 @@ def match_permission(user_id, permission):
             return False
         else:
             return True
-    elif user_id in permissions[permission]:
+    elif user_id in PERMISSIONS[permission]:
         return True
     else:
         return False

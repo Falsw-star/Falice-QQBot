@@ -198,7 +198,7 @@ def search(msg, sc):
         send_message(msg["cid"], "请使用/song [歌名]来搜索")
 
 def loads():
-    plugin_registry(name="ncm", discription="网易云音乐解析", usage="/ncm [id] ([音质])\n/song [歌名]\n/搜歌 [歌名]", status=True)
+    plugin_registry(name="ncm", description="网易云音乐解析", usage="{/ncm [id] ([音质])}下载歌曲\n{/song [歌名]}搜索歌曲\n{/搜歌 [歌名]}搜索歌曲", status=True)
     load_trigger(name="ncm", type="cmd", func=ncm, trigger="ncm", permission="all")
     load_trigger(name="ncm", type="cmd", func=search, trigger="song", permission="all")
     load_trigger(name="ncm", type="cmd", func=search, trigger="搜歌", permission="all")
