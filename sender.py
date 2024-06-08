@@ -21,11 +21,15 @@ def ssend(channel_id: str, content: str):
     SCHEDULEDSEND.append([channel_id, content])
 
 #获取用户回复
-def get(channel_id: str, user_id: str, ask_content: str, timeout: int = 20):
+def get(channel_id: str, user_id: str, ask_content: str, timeout: int = 20, timeout_rsp = True):
     global GOTLIST
     GOTLIST.append([channel_id, user_id])
     log(ask_content, "INFO")
-    message_create(channel_id, f"<at id='{user_id}'/> {ask_content}")
+    if "private" in channel_id:
+        get_content = ask_content
+    else:
+        get_content = f"<at id='{user_id}'/> {ask_content}"
+    message_create(channel_id, get_content)
     for i in range(0, timeout):
         if GOT_RSP:
             for rsp in GOT_RSP:
@@ -36,7 +40,8 @@ def get(channel_id: str, user_id: str, ask_content: str, timeout: int = 20):
         time.sleep(1)
     #超时,取消任务
     GOTLIST.remove([channel_id, user_id])
-    message_create(channel_id, f"等待{user_id}回复超时({timeout}s)")
+    if timeout_rsp:
+        message_create(channel_id, f"等待{user_id}回复超时({timeout}s)")
     return None
 
 def send_message(channel_id: str, content: str):

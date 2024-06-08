@@ -1,0 +1,63 @@
+{
+    "WTE_ITEM_INFO": {
+        "type": -1,
+        "name": "WTE",
+        "description": "「世界」"
+    },
+    "测试聊天室": {
+        "WTE_ITEM_INFO": {
+            "type": -1,
+            "name": "测试聊天室",
+            "description": "BETA版本-测试聊天室"
+        },
+        "沙发": {
+            "WTE_ITEM_INFO": {
+                "type": 2,
+                "contain": "沙发上的",
+                "contain_info": "你坐在沙发上。",
+                "description": "一个非常大的沙发。",
+                "name": "沙发"
+            }
+        },
+        "收音机": {
+            "WTE_ITEM_INFO": {
+                "type": 3,
+                "description": "一个可以放歌(经典的网易云解析)的收音机。",
+                "name": "收音机",
+                "acts": {
+                    "调频": "wte_ncm_radio"
+                }
+            }
+        },
+        "Falsw": {
+            "WTE_ITEM_INFO": {
+                "type": 0,
+                "name": "Falsw",
+                "description": "一位蓝色星球上的旅人。",
+                "user_id": "2538523045"
+            },
+            "背包": {
+                "WTE_ITEM_INFO": {
+                    "type": 1,
+                    "description": "一个精致的皮革背包。上面写着「Falsw」。",
+                    "name": "背包"
+                }
+            }
+        },
+        "Acheam": {
+            "WTE_ITEM_INFO": {
+                "type": 0,
+                "name": "Acheam",
+                "description": "一位蓝色星球上的旅人。",
+                "user_id": "1034369806"
+            },
+            "背包": {
+                "WTE_ITEM_INFO": {
+                    "type": 1,
+                    "description": "一个精致的皮革背包。上面写着「Acheam」。",
+                    "name": "背包"
+                }
+            }
+        }
+    }
+}

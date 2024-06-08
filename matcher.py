@@ -7,12 +7,12 @@ except ImportError:
 PLUGINLIST = {}
 
 #注册插件
-def plugin_registry(name: str, discription: str = "", usage: str = "", display: bool = True, status: bool = True):
+def plugin_registry(name: str, description: str = "", usage: str = "", display: bool = True, status: bool = True):
     global PLUGINLIST
     plugin = {
         "name": name,
         "status": status,
-        "discription": discription,
+        "description": description,
         "usage": usage,
         "display": display,
         "triggers": {

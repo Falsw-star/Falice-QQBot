@@ -206,10 +206,17 @@ def guild_member_get(guild_id: str, user_id: str):
     }
     return request("guild.member.get", data=data)
 
-def guild_member_list(guild_id: str, next = None):
+def guild_member_list(guild_id: str, next: str = "0"):
     log("CallingAPI: guild_member_list", "DEBUG")
     data = {
         "guild_id": guild_id,
         "next": next
     }
-    return request("guild.member.list")
+    return request("guild.member.list", data=data)
+
+def friend_list(next: str = "0"):
+    log("CallingAPI: friend_list", "DEBUG")
+    data = {
+        "next": next
+    }
+    return request("friend.list", data=data)

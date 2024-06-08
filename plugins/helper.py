@@ -11,9 +11,9 @@ def help(msg, sc):
             if plugin_name in PLUGINLIST:
                 result = f"[help] - {plugin_name}"
                 plugin = PLUGINLIST[plugin_name]
-                if plugin["discription"] or plugin["usage"]:
-                    if plugin["discription"]:
-                        result += f"\n{plugin['discription']}"
+                if plugin["description"] or plugin["usage"]:
+                    if plugin["description"]:
+                        result += f"\n{plugin['description']}"
                     if plugin["usage"]:
                         result += f"\n{plugin['usage']}"
                 else:
@@ -33,7 +33,7 @@ def plugin(msg, sc):
     send_message(msg["cid"], f"{result1}\n\n{result2}")
 
 def loads():
-    plugin_registry(name="helper", discription="简单的帮助插件", usage="/pl\n/help [插件名]", status=True)
+    plugin_registry(name="helper", description="简单的帮助插件", usage="/pl\n/help [插件名]", status=True)
     load_trigger(name="helper", type="cmd", func=help, trigger="help")
     load_trigger(name="helper", type="cmd", func=plugin, trigger="pl")
     load_trigger(name="helper", type="cmd", func=plugin, trigger="plugin")

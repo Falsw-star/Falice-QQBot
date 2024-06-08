@@ -46,5 +46,5 @@ def skin(msg, sc):
         send_message(msg["cid"], result)
 
 def loads():
-    plugin_registry(name="mcskin", discription="获取MC皮肤", usage="/skin <玩家名>", status=True)
+    plugin_registry(name="mcskin", description="获取MC皮肤", usage="/skin <玩家名>", status=True)
     load_trigger(name="mcskin", type="cmd", func=skin, trigger="skin", permission="all")

@@ -7,8 +7,7 @@ import requests
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from sender import send_message
-from matcher import plugin_registry, load_trigger
+from sender import ssend, get
 
 def HexDigest(data):
     # Digests a `bytearray` to a hex string
@@ -124,7 +123,7 @@ def Music(song_ids,level):
     # 发送POST请求
     response = post(url, params, cookies)
     if "参数错误" in response:
-        return "解析中参数错误"
+        return "(收音机里全是噪音)"
 
     jseg = json.loads(response)
     song_names = "https://music.163.com/api/v3/song/detail"
@@ -143,62 +142,19 @@ def Music(song_ids,level):
                 if len(ar_list) > 0:
                     artist_names.append('/'.join(ar['name'] for ar in ar_list))
                 song_arname = ', '.join(artist_names)
-            return "歌曲名称: " + song_name + "\n封面: <img src='" + song_picUrl + "'/>\n歌手: " + song_arname + "\n专辑: " + song_alname + "\n音质: " + music_level1(jseg['data'][0]['level']) + "\n大小: " + size(jseg['data'][0]['size']) + "\n音乐地址: " + song_url
+            return "(收音机开始播放) - " + song_name + "\n" + song_url
     else:
-        return "信息获取不完整！"
+        return "(收音机里全是噪音)"
 
-def ncm(msg, sc):
-    if len(sc) == 1:
-        songid = sc[0]
-        lvl = "standard"
-    elif len(sc) == 2:
-        songid = sc[0]
-        if(sc[1]=="2"):
-            lvl = "exhigh"
-        elif(sc[1]=="3"):
-            lvl = "lossless"
-        else:
-            lvl = "standard"
-    else:
-        send_message(msg["cid"], "请确保你输入了一项[id]或两项[id]+[音质]")
+def main(msg, player_list):
+    songid = get(msg["cid"], msg["user"]["id"], "你正试图把频道切换到某个叫「网易云」的平台上的音乐id:(20s)", 20, timeout_rsp=False)
+    if songid is None:
+        ssend(msg["cid"], "你放弃了。")
         return
-    result = Music(songid, lvl)
-    send_message(msg["cid"], str(result))
-
-
-def search_from_api(songname):
-    try:
-        #你需要在本地部署nodejs网易云api
-        link = "http://127.0.0.1:3000/search?keywords=" + songname + "&limit=10"
-        songs = requests.get(link, timeout=20).text
-    except:
-        return "搜索失败！"
-    songs = json.loads(songs)
-    if (songs["code"] == 200):
-        if ("songs" in songs["result"].keys()):
-            songs = songs["result"]["songs"]
-            i = 1
-            result = "搜到的歌:\n"
-            for song in songs:
-                result = result + str(i) + " " + song["name"] + "-" + song["artists"][0]["name"] + " # " + str(
-                    song["id"]) + "\n"
-                i = i + 1
-            return result + "可以用/ncm [id]来获取链接！"
-        else:
-            return "未搜索到结果"
+    elif songid.isdigit():
+        result = Music(songid, "standard")
+        for user_id in player_list:
+            ssend("private:" + user_id, str(result))
+        return
     else:
-        return "搜索失败: " + str(songs["code"])
-
-def search(msg, sc):
-    if sc:
-        songname = msg["content"].lstrip("/song ").lstrip("/搜歌 ")
-        result = search_from_api(songname)
-        send_message(msg["cid"], str(result))
-    else:
-        send_message(msg["cid"], "请使用/song [歌名]来搜索")
-
-def loads():
-    plugin_registry(name="ncm", description="网易云音乐解析", usage="/ncm [id] ([音质])\n/song [歌名]\n/搜歌 [歌名]", status=True)
-    load_trigger(name="ncm", type="cmd", func=ncm, trigger="ncm", permission="all")
-    load_trigger(name="ncm", type="cmd", func=search, trigger="song", permission="all")
-    load_trigger(name="ncm", type="cmd", func=search, trigger="搜歌", permission="all")
+        ssend(msg["cid"], "(收音机没有反应)")

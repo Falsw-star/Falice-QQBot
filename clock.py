@@ -23,6 +23,7 @@ try:
     from plugins import netease_music
     from plugins import bgm_calendar
     from plugins import helper
+    from plugins import WTE
 except Exception as e:
     log(f"插件导入失败: {e}","WARNING")
 log("正在加载插件...","RUNTIME")
@@ -35,6 +36,7 @@ try:
     netease_music.loads()
     bgm_calendar.loads()
     helper.loads()
+    WTE.loads()
 except Exception as e:
     log(f"插件加载失败: {e}","WARNING")
 
