@@ -5,7 +5,10 @@ import time
 from logger import log
 from copy import deepcopy
 import importlib
+import re
 
+def regex_match(s, pattern: str):
+    return bool(re.search(pattern, s))
 
 def item_append(name: str, item: dict, location: list):
     db = database("WTE_world")
@@ -22,9 +25,9 @@ def item_append(name: str, item: dict, location: list):
             if (name + str(n)) not in place:
                 name = name + "-" + str(n)
                 place[name] = item
+                db.save()
                 break
             n += 1
-        db.save()
     if item["WTE_ITEM_INFO"]["type"] == 0:
         db.open("WTE_player")
         db.data[item["WTE_ITEM_INFO"]["user_id"]]["location"] = location
@@ -48,7 +51,7 @@ def player_register(msg, sc):
                 },
                 "背包": {
                     "WTE_ITEM_INFO": {
-                        "type": 1, # container
+                        "type": 1, # backpack
                         "description": "一个精致的皮革背包。",
                         "name": "背包",
                     },
@@ -63,12 +66,12 @@ def player_register(msg, sc):
                 "looked": "",
             }
             while True:
-                player_name = get(msg["cid"], msg["user"]["id"], "[WTE] 旅人，你叫什么名字？")
+                player_name = get(msg["cid"], msg["user"]["id"], "[WTE] 旅人，你叫什么名字？",timeout_rsp=False)
                 if player_name != None:
                     if "-" in player_name or " " in player_name:
                         ssend(msg["cid"], "[WTE] 名字内包含程序关键字符。")
                         continue
-                    confrim = get(msg["cid"], msg["user"]["id"], "[WTE] "+ player_name + "，你确定吗？(y/n)")
+                    confrim = get(msg["cid"], msg["user"]["id"], "[WTE] "+ player_name + "，你确定吗？(y/n)",timeout_rsp=False)
                     if  confrim == "y" or confrim == "Y":
                         player["WTE_ITEM_INFO"]["user_id"] = msg["user"]["id"]
                         player["WTE_ITEM_INFO"]["name"] = player_name
@@ -130,8 +133,72 @@ def WORLDPAYLOAD(msg, sc):
     db.data = world
     db.save()
 
+def player_act_time_update(user_id):
+    db = database("WTE_player")
+    db.open()
+    if user_id in db.data:
+        db.data[user_id]["last_act_time"] = time.time()
+        db.data[user_id]["wake"] = True
+    db.save()
+    del db
+    return
+
+def player_wake_status_update():
+    db = database("WTE_player")
+    db.open()
+    for user_id in db.data:
+        if (time.time() - db.data[user_id]["last_act_time"]) >= 300:
+            db.data[user_id]["wake"] = False
+    db.save()
+    del db
+    log("Player wake status updated. Now wait 60s.","WTE")
+    time.sleep(60)
+    return
+
+def move(item_name: str, from_location, to_location):
+    pattern = r"-+\d+$"
+    item_name = re.sub(pattern, "", item_name)
+    db = database("WTE_world")
+    db.open()
+    place = db.data
+    for key in from_location:
+        place = place[key]
+    if item_name in place:
+        item = place.pop(item_name)
+        log(item)
+        if item["WTE_ITEM_INFO"]["type"] >= 0:
+            place = db.data
+            for key in to_location:
+                place = place[key]
+            if item_name not in place:
+                place[item_name] = item
+                db.save()
+            else:
+                n = 1
+                while True:
+                    if (item_name + str(n)) not in place:
+                        name = item_name + "-" + str(n)
+                        place[name] = item
+                        db.save()
+                        break
+                    n += 1
+            log(f"Moved Item [{item_name}] from {from_location} to {to_location}.")
+            if item["WTE_ITEM_INFO"]["type"] == 0:
+                db.open("WTE_player")
+                db.data[item["WTE_ITEM_INFO"]["user_id"]]["location"] = to_location
+                log("玩家位置已变更.","WTE")
+                db.save()
+            return item
+        else:
+            log(f"Moving Item type {str(item['WTE_ITEM_INFO']['type'])}.","WTE")
+            db.save()
+            return item
+        db.save()
+
+
 def check(msg, sc):
     if "private" in msg["cid"]:
+        player_act_time_update(msg["user"]["id"])
         db = database("WTE_player")
         db_world = database("WTE_world")
         player_data = db.read()
@@ -159,6 +226,7 @@ def check(msg, sc):
                     ssend(msg["cid"], "[WTE] 你在寻找一件不存在的事物。")
                     return
             item_display_name = ""
+            sleep = ""
             if item["WTE_ITEM_INFO"]["type"] != 0: #不是用户
                 if "contained" in item["WTE_ITEM_INFO"]:
                     if item["WTE_ITEM_INFO"]["contained"] != "":
@@ -167,13 +235,18 @@ def check(msg, sc):
                     if item["WTE_ITEM_INFO"]["looked"] != "":
                         item_display_name += f"{item['WTE_ITEM_INFO']['looked']}"
             else: #是用户 这是为了方便随时更改玩家的状态，因为获取到玩家本身的位置会变得麻烦
+                if "wake" in player_data[msg["user"]["id"]]:
+                    if player_data[msg["user"]["id"]]["wake"] == False:
+                        sleep = "(睡着了)"
+                    else:
+                        sleep = ""
                 if "contained" in player_data[msg["user"]["id"]]:
                     if player_data[msg["user"]["id"]]["contained"] != "":
                         item_display_name += f"{player_data[msg['user']['id']]['contained']}"
                 if "looked" in player_data[msg["user"]["id"]]:
                     if player_data[msg["user"]["id"]]["looked"] != "":
                         item_display_name += f"{player_data[msg['user']['id']]['looked']}"
-            item_display_name += f"「{item['WTE_ITEM_INFO']['name']}」"
+            item_display_name += f"「{item['WTE_ITEM_INFO']['name']}」{sleep}"
             sight = f"你仔细看了看{item_display_name}。"
             if "description" in item["WTE_ITEM_INFO"]:
                 sight += "\n" + item["WTE_ITEM_INFO"]["description"]
@@ -184,6 +257,7 @@ def check(msg, sc):
 
 def say(msg, sc):
     if "private" in msg["cid"]:
+        player_act_time_update(msg["user"]["id"])
         if sc:
             player_say = ' '.join(str(e) for e in sc)
             db = database("WTE_player")
@@ -199,13 +273,15 @@ def say(msg, sc):
             for key in place:
                 if key != "WTE_ITEM_INFO":
                     if place[key]["WTE_ITEM_INFO"]["type"] == 0:
-                        player_send_list.append(place[key]["WTE_ITEM_INFO"]["user_id"])
+                        if player_data[place[key]["WTE_ITEM_INFO"]["user_id"]]["wake"]:
+                            player_send_list.append(place[key]["WTE_ITEM_INFO"]["user_id"])
             for player_send in player_send_list:
                 ssend("private:" + player_send, f"{player_name}：{player_say}")
             log(f"[WTE] {player_name}对 {' '.join(str(e) for e in player_send_list)} 说 {player_say}。")
 
 def use(msg, sc):
     if "private" in msg["cid"]:
+        player_act_time_update(msg["user"]["id"])
         if sc:
             db = database("WTE_player")
             db_world = database("WTE_world")
@@ -252,14 +328,29 @@ def use(msg, sc):
                 else:
                     func_name = item['WTE_ITEM_INFO']['acts'][rsp]
                     func = importlib.import_module(f"plugins.WTE_functions.{func_name}")
-                    func.main(msg, player_send_list)
+                    data = {
+                        "player_send_list": player_send_list,
+                        "player_data": player_data,
+                        "world_data": world_data,
+                    }
+                    func.main(msg, data)
                     del func
+            elif item_type == -2: # door
+                from_location = player_data[msg["user"]["id"]]["location"]
+                to_location = item["WTE_ITEM_INFO"]["target"]
+                info = item["WTE_ITEM_INFO"]["targeted"]
+                log(player_name)
+                log(from_location)
+                log(to_location)
+                move(player_name, from_location, to_location)
+                ssend(msg["cid"], f"你进入了「{to_location[len(to_location)-1]}」。\n- {info}")
 
 
 def loads():
-    plugin_registry(name="WTE", description="WTE", usage="注册 /register\n查看周围 /check\n查看某物品 /check [物品名]\n使用某物品 /use [物品名]", status=False)
+    plugin_registry(name="WTE", description="WTE", usage="注册 /register\n查看周围 /check\n查看某物品 /check [物品名]\n使用某物品 /use [物品名]\n向范围内玩家说话 /say [内容]", status=True)
     load_trigger(name="WTE", type="cmd", func=WORLDPAYLOAD, trigger="WORLDPAYLOAD", block=True, permission="superusers")
     load_trigger(name="WTE", type="cmd", func=player_register, trigger="register", block=True, permission="all")
     load_trigger(name="WTE", type="cmd", func=check, trigger="check", block=True, permission="all")
     load_trigger(name="WTE", type="cmd", func=say, trigger="say", block=True, permission="all")
     load_trigger(name="WTE", type="cmd", func=use, trigger="use", block=True, permission="all")
+    load_trigger(name="WTE", type="services", func=player_wake_status_update, trigger="WTEPlayerWakeStatusUpdater")

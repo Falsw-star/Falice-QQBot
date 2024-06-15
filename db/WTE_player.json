@@ -4,7 +4,7 @@
             "测试聊天室"
         ],
         "wake": false,
-        "last_act_time": 1717829238.589222,
+        "last_act_time": 1718448530.367397,
         "name": "Falsw",
         "contained": "",
         "looked": ""
@@ -16,6 +16,16 @@
         "wake": false,
         "last_act_time": 1717830919.8268118,
         "name": "Acheam",
+        "contained": "",
+        "looked": ""
+    },
+    "3534923810": {
+        "location": [
+            "测试聊天室"
+        ],
+        "wake": false,
+        "last_act_time": 1717854010.284768,
+        "name": "张开银",
         "contained": "",
         "looked": ""
     }

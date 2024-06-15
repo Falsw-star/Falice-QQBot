@@ -32,7 +32,7 @@ def log(content, level: str = "INFO"):
     elif level == "CHAT":
         tag = "[" + str(paint(level, "yellow")) + "]"
     else:
-        tag = level
+        tag = f"[{level}]"
     print(tag + " : " + content)
 
 def save(msg):

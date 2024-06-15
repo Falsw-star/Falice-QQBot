@@ -4,6 +4,41 @@
         "name": "WTE",
         "description": "「世界」"
     },
+    "茶馆": {
+        "WTE_ITEM_INFO": {
+            "type": -1,
+            "name": "茶馆",
+            "description": "一个茶馆。"
+        },
+        "门": {
+            "WTE_ITEM_INFO": {
+                "type": -2,
+                "description": "一扇门",
+                "name": "门",
+                "target": [
+                    "测试聊天室"
+                ],
+                "targeted": "黄色的灯光照到你身上。"
+            },
+            "牌子": {
+                "WTE_ITEM_INFO": {
+                    "type": 5,
+                    "description": "上面写着「聊天室」。",
+                    "name": "牌子"
+                }
+            }
+        },
+        "饮水机": {
+            "WTE_ITEM_INFO": {
+                "type": 3,
+                "description": "可以在这里接水。",
+                "name": "饮水机",
+                "acts": {
+                    "接水": "wte_water_dispenser"
+                }
+            }
+        }
+    },
     "测试聊天室": {
         "WTE_ITEM_INFO": {
             "type": -1,
@@ -29,18 +64,21 @@
                 }
             }
         },
-        "Falsw": {
+        "门": {
             "WTE_ITEM_INFO": {
-                "type": 0,
-                "name": "Falsw",
-                "description": "一位蓝色星球上的旅人。",
-                "user_id": "2538523045"
+                "type": -2,
+                "description": "一扇门。",
+                "name": "门",
+                "target": [
+                    "茶馆"
+                ],
+                "targeted": "一股茶香飘了过来。"
             },
-            "背包": {
+            "牌子": {
                 "WTE_ITEM_INFO": {
-                    "type": 1,
-                    "description": "一个精致的皮革背包。上面写着「Falsw」。",
-                    "name": "背包"
+                    "type": 5,
+                    "description": "上面写着「茶馆」。",
+                    "name": "牌子"
                 }
             }
         },
@@ -56,6 +94,54 @@
                     "type": 1,
                     "description": "一个精致的皮革背包。上面写着「Acheam」。",
                     "name": "背包"
+                }
+            }
+        },
+        "张开银": {
+            "WTE_ITEM_INFO": {
+                "type": 0,
+                "name": "张开银",
+                "description": "一位蓝色星球上的旅人。",
+                "user_id": "3534923810"
+            },
+            "背包": {
+                "WTE_ITEM_INFO": {
+                    "type": 1,
+                    "description": "一个精致的皮革背包。上面写着「张开银」。",
+                    "name": "背包"
+                }
+            }
+        },
+        "Falsw": {
+            "WTE_ITEM_INFO": {
+                "type": 0,
+                "name": "Falsw",
+                "description": "一位蓝色星球上的旅人。",
+                "user_id": "2538523045"
+            },
+            "背包": {
+                "WTE_ITEM_INFO": {
+                    "type": 1,
+                    "description": "一个精致的皮革背包。上面写着「Falsw」。",
+                    "name": "背包"
+                },
+                "一杯水": {
+                    "WTE_ITEM_INFO": {
+                        "type": 4,
+                        "description": "一杯干净透亮的水。冒出的蒸汽让你心情舒畅。",
+                        "name": "一杯水",
+                        "hunger": 0,
+                        "spirit": 5
+                    }
+                },
+                "一杯水-1": {
+                    "WTE_ITEM_INFO": {
+                        "type": 4,
+                        "description": "一杯干净透亮的水。冒出的蒸汽让你心情舒畅。",
+                        "name": "一杯水",
+                        "hunger": 0,
+                        "spirit": 5
+                    }
                 }
             }
         }

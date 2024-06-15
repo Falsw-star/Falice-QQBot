@@ -3,6 +3,7 @@ try:
     import thread #type: ignore
 except ImportError:
     import _thread as thread
+import time
 
 PLUGINLIST = {}
 
@@ -190,4 +191,8 @@ def run_services():
         if plugin["status"] == True:
             for service_key in plugin["triggers"]["services"]:
                 function = plugin["triggers"]["services"][service_key]["func"]
-                thread.start_new_thread(function, ())
+                def service_run():
+                    while True:
+                        function()
+                        time.sleep(1)
+                thread.start_new_thread(service_run,())

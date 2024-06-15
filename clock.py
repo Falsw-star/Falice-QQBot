@@ -55,11 +55,12 @@ for plugin_key in PLUGINLIST:
 log("挂载的服务: " + str(services_list), "INFO")
 
 #在logs文件夹里生成每个群聊的log，如果你在使用当前版本的Falice，可以打开它。
-make_log = False
+from CONFIG import MAKELOG
 
 from sender import GOTLIST, GOT_RSP, SCHEDULEDSEND
 
 #主时钟
+from CONFIG import MAINCLOCK
 log("启动主时钟...","RUNTIME")
 done = False
 while True:
@@ -71,13 +72,13 @@ while True:
         if done == False:
             log("DONE!","RUNTIME")
             done = True
-        #运行被注册为“service”的插件
-        run_services()
+            #运行被注册为“service”的插件
+            run_services()
 
         #消息处理
         for msg in adapter.MASSAGE_LIST:
 
-            if make_log == True:
+            if MAKELOG:
                 thread.start_new_thread(save,(msg,))
             match(msg)
 
@@ -96,4 +97,4 @@ while True:
             thread.start_new_thread(message_create,(SCHEDULEDSEND[0][0], SCHEDULEDSEND[0][1]))
             SCHEDULEDSEND.remove(SCHEDULEDSEND[0])
 
-    time.sleep(1)
+    time.sleep(MAINCLOCK)

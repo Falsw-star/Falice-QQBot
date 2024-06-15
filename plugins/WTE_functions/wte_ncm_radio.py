@@ -146,14 +146,14 @@ def Music(song_ids,level):
     else:
         return "(收音机里全是噪音)"
 
-def main(msg, player_list):
+def main(msg, data):
     songid = get(msg["cid"], msg["user"]["id"], "你正试图把频道切换到某个叫「网易云」的平台上的音乐id:(20s)", 20, timeout_rsp=False)
     if songid is None:
         ssend(msg["cid"], "你放弃了。")
         return
     elif songid.isdigit():
         result = Music(songid, "standard")
-        for user_id in player_list:
+        for user_id in data["player_send_list"]:
             ssend("private:" + user_id, str(result))
         return
     else:
