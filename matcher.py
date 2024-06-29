@@ -9,10 +9,11 @@ PLUGINLIST = {}
 
 #注册插件
 def plugin_registry(name: str, description: str = "", usage: str = "", display: bool = True, status: bool = True):
-    global PLUGINLIST
     plugin = {
         "name": name,
-        "status": status,
+        "status": {
+            "default": status
+        },
         "description": description,
         "usage": usage,
         "display": display,
@@ -29,7 +30,6 @@ def plugin_registry(name: str, description: str = "", usage: str = "", display: 
 
 #注册触发器
 def load_trigger(name: str, type: str, func, trigger: str, block: bool = False, permission: str = "all"):
-    global PLUGINLIST
     if name not in PLUGINLIST:
         log("在注册触发器时未发现相应已注册插件，请确保在插件中先注册插件再注册触发器", "WARNING")
     else:
@@ -47,12 +47,13 @@ def load_trigger(name: str, type: str, func, trigger: str, block: bool = False, 
             PLUGINLIST[name]["triggers"][type][trigger] = one_trigger
 
 #匹配触发器
-def match_trigger(content: str, type: str):
-    global PLUGINLIST
+def match_trigger(content: str, type: str, guild_id: str):
     trigger_list = []
     for plugin_key in PLUGINLIST:
         plugin = PLUGINLIST[plugin_key]
-        if plugin["status"] == True:
+        if guild_id not in plugin["status"]:
+            plugin["status"][guild_id] = plugin["status"]["default"]
+        if plugin["status"][guild_id] == True:
             if type == "cmd":
                 if content in plugin["triggers"]["cmd"]:
                     log(f"插件[{plugin['name']}]的触发器[{content}](cmd)触发")
@@ -98,8 +99,8 @@ def match_permission(user_id, permission):
         return False
 
 #解析cmd
-def on_cmd(user_id: str, content: str):
-    cmd_symbol = "/"
+def on_cmd(user_id: str, content: str, guild_id: str):
+    from CONFIG import CMDSYMBOL
     #解析结果: "triged"指示指令是否被触发，"functions"存储需要被触发的函数，"special_content"储存触发器产生的特殊消息内容（如cmd触发器的是一个保存cmd参数的列表）
     result = {
         "blocked": False,
@@ -110,12 +111,12 @@ def on_cmd(user_id: str, content: str):
     arg_list = content.split()
     #判断是否属于cmd类型
     if arg_list:
-        if arg_list[0].startswith(cmd_symbol):
+        if arg_list[0].startswith(CMDSYMBOL):
             #产生special_content
-            cmd = arg_list[0].lstrip(cmd_symbol)
+            cmd = arg_list[0].lstrip(CMDSYMBOL)
             arg_list.remove(arg_list[0])
             result["special_content"] = arg_list
-            if trigger_list := match_trigger(cmd,"cmd"):
+            if trigger_list := match_trigger(cmd,"cmd",guild_id=guild_id):
                 for one_trigger in trigger_list:
                     if(match_permission(user_id=user_id, permission=one_trigger["permission"])):
                         result["functions"].append(one_trigger["func"])
@@ -128,7 +129,7 @@ def on_cmd(user_id: str, content: str):
     return result
 
 #解析开头、结尾和关键字
-def on_text(user_id: str, content: str):
+def on_text(user_id: str, content: str, guild_id: str):
     result = {
         "blocked": False,
         "functions": [],
@@ -136,7 +137,7 @@ def on_text(user_id: str, content: str):
     }
     if content:
         for type in ["start","end","keyword"]:
-            if trigger_list := match_trigger(content,type):
+            if trigger_list := match_trigger(content,type,guild_id=guild_id):
                 for one_trigger in trigger_list:
                     if(match_permission(user_id=user_id, permission=one_trigger["permission"])):
                         result["functions"].append(one_trigger["func"])
@@ -148,7 +149,7 @@ def on_text(user_id: str, content: str):
                         return result
     return result
 
-def on_all(user_id: str):
+def on_all(user_id: str, guild_id: str):
     result = {
         "blocked": False,
         "functions": [],
@@ -156,7 +157,9 @@ def on_all(user_id: str):
     }
     for plugin_key in PLUGINLIST:
         plugin = PLUGINLIST[plugin_key]
-        if plugin["status"] == True:
+        if guild_id not in plugin["status"]:
+            plugin["status"][guild_id] = plugin["status"]["default"]
+        if plugin["status"][guild_id] == True:
             for one_trigger in plugin["triggers"]["all"]:
                 if(match_permission(user_id=user_id, permission=one_trigger["permission"])):
                     result["functions"].append(one_trigger["func"])
@@ -177,15 +180,15 @@ def run(result, msg):
 def match(msg):
     user_id = msg["user"]["id"]
     content = msg["content"]
-    run(result=on_all(user_id=user_id), msg=msg)
-    if run(result=on_cmd(user_id=user_id, content=content), msg=msg):
+    guild_id = msg["cid"]
+    run(result=on_all(user_id=user_id,guild_id=guild_id), msg=msg)
+    if run(result=on_cmd(user_id=user_id, content=content, guild_id=guild_id), msg=msg):
         return
-    elif run(result=on_text(user_id=user_id, content=content), msg=msg):
+    elif run(result=on_text(user_id=user_id, content=content, guild_id=guild_id), msg=msg):
         return
     return
 
 def run_services():
-    global PLUGINLIST
     for plugin_key in PLUGINLIST:
         plugin = PLUGINLIST[plugin_key]
         if plugin["status"] == True:

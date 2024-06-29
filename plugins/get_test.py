@@ -8,5 +8,5 @@ def main(msg, special_content):
 
 def loads():
     #注册插件名
-    plugin_registry(name="get_test", status=True)
+    plugin_registry(name="get_test", status=False)
     load_trigger(name="get_test", type="cmd", func=main, trigger="get_test", block=False, permission="all")

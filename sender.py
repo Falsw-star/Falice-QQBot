@@ -4,6 +4,7 @@ from adapters.adapter_satori import message_delete as message_delete
 from adapters.adapter_satori import guild_list as guild_list
 from adapters.adapter_satori import guild_member_get as guild_member_get
 from adapters.adapter_satori import guild_member_list as guild_member_list
+from adapters.adapter_satori import friend_list as friend_list
 import time
 
 from logger import log
@@ -21,15 +22,15 @@ def ssend(channel_id: str, content: str):
     SCHEDULEDSEND.append([channel_id, content])
 
 #获取用户回复
-def get(channel_id: str, user_id: str, ask_content: str, timeout: int = 20, timeout_rsp = True):
+def get(channel_id: str, user_id: str, ask_content: str, timeout: int = 20, timeout_rsp = True, ask = True):
     global GOTLIST
     GOTLIST.append([channel_id, user_id])
-    log(ask_content, "INFO")
-    if "private" in channel_id:
-        get_content = ask_content
-    else:
-        get_content = f"<at id='{user_id}'/> {ask_content}"
-    message_create(channel_id, get_content)
+    if ask:
+        if "private" in channel_id:
+            get_content = ask_content
+        else:
+            get_content = f"<at id='{user_id}'/> {ask_content}"
+        message_create(channel_id, get_content)
     for i in range(0, timeout):
         if GOT_RSP:
             for rsp in GOT_RSP:

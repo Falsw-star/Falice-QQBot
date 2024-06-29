@@ -6,7 +6,6 @@ def help(msg, sc):
     if not sc:
         send_message(msg["cid"], "请用/pl看看插件吧xwx")
     else:
-        global PLUGINLIST
         for plugin_name in sc:
             if plugin_name in PLUGINLIST:
                 result = f"[help] - {plugin_name}"
@@ -23,13 +22,13 @@ def help(msg, sc):
                 ssend(msg["cid"], f"没有{plugin_name}这个插件哦qaq")
 
 def plugin(msg, sc):
-    global PLUGINLIST
     result1 = "[pl] - 已经启用的插件:"
     result2 = "[pl] - 已经加载的插件:"
     for plugin_name in PLUGINLIST:
         result2 += f"\n- {plugin_name}"
-        if PLUGINLIST[plugin_name]["status"]:
-            result1 += f"\n- {plugin_name}"
+        if msg["cid"] in PLUGINLIST[plugin_name]["status"]:
+            if PLUGINLIST[plugin_name]["status"][msg["cid"]]:
+                result1 += f"\n- {plugin_name}"
     send_message(msg["cid"], f"{result1}\n\n{result2}")
 
 def loads():

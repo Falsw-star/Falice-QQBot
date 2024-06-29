@@ -7,8 +7,9 @@ import requests
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from sender import send_message
+from sender import send_message, get
 from matcher import plugin_registry, load_trigger
+from logger import log
 
 def HexDigest(data):
     # Digests a `bytearray` to a hex string
@@ -179,21 +180,36 @@ def search_from_api(songname):
             songs = songs["result"]["songs"]
             i = 1
             result = "搜到的歌:\n"
+            song_list = []
             for song in songs:
                 result = result + str(i) + " " + song["name"] + "-" + song["artists"][0]["name"] + " # " + str(
                     song["id"]) + "\n"
+                song_list.append(song["id"])
                 i = i + 1
-            return result + "可以用/ncm [id]来获取链接！"
+            return [result + "20s内可以直接输入序号，也可以用/ncm [id]来获取链接！",True,song_list]
         else:
-            return "未搜索到结果"
+            return ["未搜索到结果",False]
     else:
-        return "搜索失败: " + str(songs["code"])
+        return ["搜索失败: " + str(songs["code"]),False]
+
+from adapters.adapter_satori import LOGIN
 
 def search(msg, sc):
     if sc:
         songname = msg["content"].lstrip("/song ").lstrip("/搜歌 ")
         result = search_from_api(songname)
-        send_message(msg["cid"], str(result))
+        send_message(msg["cid"], str(result[0]))
+        self_rsp = get(msg["cid"], LOGIN["id"], ask_content="qwq", timeout_rsp=False, ask=False)
+        if result[1] == True:
+            song_list = result[2]
+            rsp = get(msg["cid"], msg["user"]["id"], ask_content="qwq", timeout_rsp=False, ask=False)
+            nums = ["1","2","3","4","5","6","7","8","9","10"]
+            log(rsp)
+            if rsp is not None:
+                if rsp in nums:
+                    song_id = str(song_list[int(rsp)-1])
+                    log(song_id)
+                    ncm(msg, [song_id,"2"])
     else:
         send_message(msg["cid"], "请使用/song [歌名]来搜索")
 

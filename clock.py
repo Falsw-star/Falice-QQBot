@@ -1,4 +1,4 @@
-import time
+import time, os, importlib
 try:
     import thread #type: ignore
 except ImportError:
@@ -12,33 +12,19 @@ from adapters.adapter_satori import message_create
 log("正在启动适配器线程...","RUNTIME")
 thread.start_new_thread(adapter.run, ())
 
-#编辑该区域导入模块
-log("正在导入插件...","RUNTIME")
-try:
-    from plugins import echo
-    from plugins import trigger_test
-    from plugins import get_test
-    from plugins import db_test
-    from plugins import mcskin
-    from plugins import netease_music
-    from plugins import bgm_calendar
-    from plugins import helper
-    from plugins import WTE
-except Exception as e:
-    log(f"插件导入失败: {e}","WARNING")
-log("正在加载插件...","RUNTIME")
-try:
-    echo.loads()
-    trigger_test.loads()
-    get_test.loads()
-    db_test.loads()
-    mcskin.loads()
-    netease_music.loads()
-    bgm_calendar.loads()
-    helper.loads()
-    WTE.loads()
-except Exception as e:
-    log(f"插件加载失败: {e}","WARNING")
+#自动加载插件
+load_plugins = os.listdir("plugins")
+for plugin in load_plugins:
+    if plugin.endswith(".py"):
+        try:
+            func = importlib.import_module("plugins." + plugin[:-3])
+            try:
+                func.loads()
+            except Exception as e:
+                log(f"插件[{plugin}]加载失败: {e}","WARNING")
+        except Exception as e:
+            log(f"插件[{plugin}]导入失败: {e}","WARNING")
+del func
 
 #展示注册的插件
 from matcher import PLUGINLIST
@@ -89,6 +75,7 @@ while True:
                     if got[0] == msg_channel_id and got[1] == msg_user_id:
                         GOT_RSP.append([msg_channel_id, msg_user_id, msg["content"]])
                         GOTLIST.remove(got)
+                        break
 
             adapter.MASSAGE_LIST.remove(msg)
 
