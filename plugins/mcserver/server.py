@@ -175,3 +175,16 @@ class Server():
         except Exception as e:
             return [e]
         return rsp_list
+    
+    def stop(self):
+        if self.status != 1:
+            return server_is_not_running.format(self.Server_Name)
+        try:
+            self.rcon.connect()
+            self.rcon.command("stop")
+            self.rcon.disconnect()
+            while self.status == 1:
+                time.sleep(1)
+        except:
+            return False
+        return True
