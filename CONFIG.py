@@ -20,5 +20,9 @@ PERMISSIONS = {
 # cmd触发器前面的指令标
 CMDSYMBOL = "/"
 
+# 变量。机器人将会全局地将%变量名%替换为变量值。
+VARIABLE = {
+}
+
 # 是否制作每个聊天的日志文件（这会记录机器人收到的每一条信息）
 MAKELOG = False

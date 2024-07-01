@@ -16,13 +16,22 @@ SCHEDULEDSEND = []
 GOTLIST = []
 GOT_RSP = []
 
+from CONFIG import VARIABLE
+def hide_v(string: str):
+    for v in VARIABLE:
+        string = string.replace(VARIABLE[v], v)
+    return string
+
+
 #发送预定消息
 def ssend(channel_id: str, content: str):
+    content = hide_v(content)
     global SCHEDULEDSEND
     SCHEDULEDSEND.append([channel_id, content])
 
 #获取用户回复
 def get(channel_id: str, user_id: str, ask_content: str, timeout: int = 20, timeout_rsp = True, ask = True):
+    ask_content = hide_v(ask_content)
     global GOTLIST
     GOTLIST.append([channel_id, user_id])
     if ask:
@@ -46,6 +55,7 @@ def get(channel_id: str, user_id: str, ask_content: str, timeout: int = 20, time
     return None
 
 def send_message(channel_id: str, content: str):
+    content = hide_v(content)
     message_create(channel_id, content)
 
 def get_user(guild_id: str, user_id: str):

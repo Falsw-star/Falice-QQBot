@@ -2,13 +2,11 @@ from matcher import load_trigger, plugin_registry
 from sender import ssend
 from logger import log
 
+from CONFIG import VARIABLE
 #要运作的函数
 def main(msg, special_content):
     if special_content:
-        text = ""
-        for arg in special_content:
-            text += arg + " "
-        text = text.strip()
+        text = ' '.join(e for e in special_content)
         ssend(msg["cid"], text)
 
 def loads():

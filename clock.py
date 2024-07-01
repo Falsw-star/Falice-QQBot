@@ -46,7 +46,7 @@ from CONFIG import MAKELOG
 from sender import GOTLIST, GOT_RSP, SCHEDULEDSEND
 
 #主时钟
-from CONFIG import MAINCLOCK
+from CONFIG import MAINCLOCK, VARIABLE
 log("启动主时钟...","RUNTIME")
 done = False
 while True:
@@ -63,6 +63,9 @@ while True:
 
         #消息处理
         for msg in adapter.MASSAGE_LIST:
+
+            for v in VARIABLE:
+                msg["content"] = msg["content"].replace(f"%{v}%", VARIABLE[v])
 
             if MAKELOG:
                 thread.start_new_thread(save,(msg,))
